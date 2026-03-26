@@ -6,20 +6,23 @@ from .memory_tail import MemoryTail
 from .assistant_filing import AssistantFiling
 import os
 
-DEFAULT_MODEL = 'qwen3.5:9b'
+DEFAULT_MODEL = 'hf.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF:Q4_K_M'
 
 
 class RAGPipeline:
     def __init__(self, model: str = DEFAULT_MODEL, resources_dir: str = '~/ObsidianVaults/ProjectsVault/Resources', working_memory_path: str = '~/ObsidianVaults/ProjectsVault/WorkingMemory.md'):
         # choose client: HF model ids contain '/' (e.g., 'Tesslate/OmniCoder-9B') or may be prefixed with 'hf:'
         if isinstance(model, str) and ('/' in model or (model.startswith('hf:'))):
-            # normalize 'hf:repo/name' -> 'repo/name'
-            model_id = model[3:] if model.startswith('hf:') else model
-            try:
-                self.client = HuggingFaceClient(model_id)
-            except Exception:
-                # fallback to Ollama if HF client fails to initialize
+            if model.startswith('hf.co/'):
                 self.client = OllamaClient(model=model)
+            else:
+                # normalize 'hf:repo/name' -> 'repo/name'
+                model_id = model[3:] if model.startswith('hf:') else model
+                try:
+                    self.client = HuggingFaceClient(model_id)
+                except Exception:
+                    # fallback to Ollama if HF client fails to initialize
+                    self.client = OllamaClient(model=model)
         else:
             self.client = OllamaClient(model=model)
         # use hybrid mode (dense FAISS + BM25 fallback). If dependencies missing, Retriever falls back to naive.

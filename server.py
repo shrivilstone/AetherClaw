@@ -41,11 +41,16 @@ async def stats():
         cpu = psutil.cpu_percent()
         ram = psutil.virtual_memory().percent
         disk = psutil.disk_usage('/').percent
+        
+        # Grab active pipeline model definition
+        pipeline = get_pipeline()
+        active_model = getattr(pipeline.client, 'model', 'unknown')
+        
         return {
             "cpu": cpu,
             "ram": ram,
             "disk": disk,
-            "model": "qwen3.5:9b",
+            "model": active_model,
             "status": "Healthy"
         }
     except Exception as e:
