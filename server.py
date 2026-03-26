@@ -59,7 +59,7 @@ async def stats():
 @app.get("/api/memory")
 async def memory():
     try:
-        working_memory_path = os.path.expanduser('~/ObsidianVaults/ProjectsVault/WorkingMemory.md')
+        working_memory_path = os.path.abspath(os.path.join(BASE_DIR, '../../WorkingMemory.md'))
         if os.path.exists(working_memory_path):
             with open(working_memory_path, 'r') as f:
                 content = f.read()
@@ -70,7 +70,17 @@ async def memory():
         return {"error": str(e)}
 
 # Serve static files
-app.mount("/", StaticFiles(directory="static", html=True), name="static")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
+
+# Serve the main HTML application for the root path
+@app.get("/", response_class=HTMLResponse)
+async def read_root():
+    index_path = os.path.join(BASE_DIR, "static", "index.html")
+    if os.path.exists(index_path):
+        with open(index_path, "r") as f:
+            return f.read()
+    raise HTTPException(status_code=404, detail="index.html not found")
 
 if __name__ == "__main__":
     import uvicorn

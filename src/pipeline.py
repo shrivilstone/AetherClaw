@@ -10,7 +10,13 @@ DEFAULT_MODEL = 'hf.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF:Q4_K_M'
 
 
 class RAGPipeline:
-    def __init__(self, model: str = DEFAULT_MODEL, resources_dir: str = '~/ObsidianVaults/ProjectsVault/Resources', working_memory_path: str = '~/ObsidianVaults/ProjectsVault/WorkingMemory.md'):
+    def __init__(self, model: str = DEFAULT_MODEL, resources_dir: str = None, working_memory_path: str = None):
+        # Calculate dynamic absolute paths relative to AetherClaw's new location inside Obsidian Vault
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        vault_dir = os.path.abspath(os.path.join(base_dir, '../../'))
+        
+        resources_dir = resources_dir or os.path.join(vault_dir, 'Resources')
+        working_memory_path = working_memory_path or os.path.join(vault_dir, 'WorkingMemory.md')
         # choose client: HF model ids contain '/' (e.g., 'Tesslate/OmniCoder-9B') or may be prefixed with 'hf:'
         if isinstance(model, str) and ('/' in model or (model.startswith('hf:'))):
             if model.startswith('hf.co/'):

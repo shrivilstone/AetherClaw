@@ -6,3 +6,5 @@ tqdm
 fastapi
 uvicorn
 psutil
+duckduckgo-search
+requests
