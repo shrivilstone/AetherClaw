@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Environments
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+ai_env/
+
+# Mac
+.DS_Store
+
+# IDE
+.vscode/
+
+# Project specifics
+server_log.txt

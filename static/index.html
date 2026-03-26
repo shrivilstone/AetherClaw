@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AetherClaw | AI Command Center</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+</head>
+<body class="dark-theme">
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <h1>AetherClaw</h1>
+            </div>
+            <nav class="nav-menu">
+                <button class="nav-item active" data-view="chat">
+                    <span class="icon">💬</span> Chat
+                </button>
+                <button class="nav-item" data-view="memory">
+                    <span class="icon">🧠</span> Memory
+                </button>
+                <button class="nav-item" data-view="stats">
+                    <span class="icon">📊</span> Stats
+                </button>
+            </nav>
+            <div class="system-status">
+                <div class="status-indicator online"></div>
+                <span>System Online</span>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <!-- Chat View -->
+            <section id="chat-view" class="view active">
+                <header class="view-header">
+                    <h2>AI Assistant</h2>
+                    <p>Powered by qwen3.5:9b</p>
+                </header>
+                <div id="chat-messages" class="chat-container">
+                    <div class="message assistant">
+                        <div class="avatar">A</div>
+                        <div class="bubble">Greetings. I am AetherClaw. How can I assist you today?</div>
+                    </div>
+                </div>
+                <div class="input-area">
+                    <textarea id="user-input" placeholder="Type your message..." rows="1"></textarea>
+                    <button id="send-btn">Send</button>
+                </div>
+            </section>
+
+            <!-- Memory View -->
+            <section id="memory-view" class="view">
+                <header class="view-header">
+                    <h2>Working Memory</h2>
+                    <p>Current snapshots from Obsidian</p>
+                </header>
+                <div class="memory-container">
+                    <pre id="memory-content">Loading memory...</pre>
+                </div>
+            </section>
+
+            <!-- Stats View -->
+            <section id="stats-view" class="view">
+                <header class="view-header">
+                    <h2>System Analytics</h2>
+                    <p>Real-time resource monitoring</p>
+                </header>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>CPU Usage</h3>
+                        <div class="stat-value" id="cpu-stat">0%</div>
+                        <div class="stat-bar"><div class="bar-fill" style="width: 0%"></div></div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>RAM Usage</h3>
+                        <div class="stat-value" id="ram-stat">0%</div>
+                        <div class="stat-bar"><div class="bar-fill" style="width: 0%"></div></div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Disk Usage</h3>
+                        <div class="stat-value" id="disk-stat">0%</div>
+                        <div class="stat-bar"><div class="bar-fill" style="width: 0%"></div></div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Model Status</h3>
+                        <div class="stat-value">Active</div>
+                        <p>qwen3.5:9b</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
