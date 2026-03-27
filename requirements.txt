@@ -1,10 +1,11 @@
 sentence-transformers>=2.2.2
 faiss-cpu
 rank-bm25
-numpy
+numpy<2.0.0
 tqdm
 fastapi
 uvicorn
 psutil
 duckduckgo-search
+mcp
 requests

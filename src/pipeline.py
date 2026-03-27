@@ -39,7 +39,9 @@ class RAGPipeline:
         self.tail = MemoryTail(working_memory_path)
         try:
             self.assistant = AssistantFiling()
-        except Exception:
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
             self.assistant = None
 
     def build_context(self, query: str, k: int = 3) -> str:
@@ -57,31 +59,34 @@ class RAGPipeline:
         ctx = self.build_context(query, k=k)
         prompt = f"System: You are a helpful assistant. Use the context below when answering.\n\n{ctx}\n\nUser: {query}\n\nAnswer concisely and list next actions."
         resp = self.client.run(prompt, max_tokens=max_tokens)
-        # create a short one-line summary to keep tail small
+        
+        # IMPROVED MEMORY SYSTEM: Create a logical "transition summary"
+        # Format: [User: <brief goal> -> Assistant: <brief action/result>]
         try:
+            # Generate a very short summary of the response using a regex or simple split
             import re
-            m = re.search(r"(.+?[\.!?])(\s|$)", resp.strip())
-            if m:
-                summary = m.group(1).strip()
-            else:
-                summary = resp.strip().splitlines()[0][:200]
+            first_sentence = re.split(r'(?<=[.!?]) +', resp.strip())[0]
+            short_resp = first_sentence[:100] + "..." if len(first_sentence) > 100 else first_sentence
+            short_query = query[:50] + "..." if len(query) > 50 else query
+            
+            transition_summary = f"[User: {short_query} -> Assistant: {short_resp}]"
         except Exception:
-            summary = (resp or '').strip()[:200]
+            transition_summary = f"[Interaction: {query[:30]}...]"
 
-        # append a concise tail entry and short snapshot (avoid writing full response into WorkingMemory)
+        # Append to tail and snapshots with the refined format
         try:
-            self.tail.append(summary, source='assistant')
+            self.tail.append(transition_summary, source='assistant')
         except Exception:
             pass
         try:
-            self.mem.append_snapshot('response_summary', f'Q: {query}\n\nA_summary: {summary}')
+            self.mem.append_snapshot('transition', transition_summary)
         except Exception:
             pass
 
-        # record short progress to Obsidian (Progress.md) to avoid overwriting tail
+        # record short progress to Obsidian (Progress.md)
         try:
             if self.assistant:
-                self.assistant.append_short_progress(summary, label='response')
+                self.assistant.append_short_progress(transition_summary, label='memory_transition')
         except Exception:
             pass
         return resp

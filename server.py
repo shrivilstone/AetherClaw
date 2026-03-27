@@ -8,6 +8,8 @@ from src.pipeline import RAGPipeline
 
 app = FastAPI(title="AetherClaw API")
 
+# Define BASE_DIR globally before any route handlers
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # Global pipeline instance
 _pipeline = None
 
@@ -70,7 +72,6 @@ async def memory():
         return {"error": str(e)}
 
 # Serve static files
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
 
 # Serve the main HTML application for the root path

@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# Export standard paths for non-interactive AppleScript environment
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+
 # Change directory to script location
 cd "$(dirname "$0")"
 
